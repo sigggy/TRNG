@@ -5,6 +5,8 @@ from bank import write_to_bank
 from defines import PRODUCER_SLEEP_TIME
 
 buffer = EntropyBuffer()
+# * This read will need to be reworked as we grow to scale 
+# * Will likely need to implement some sort of rotating chunk files 
 
 def producer_loop():
     try:
