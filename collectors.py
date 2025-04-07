@@ -6,7 +6,7 @@ def collect_system_entropy():
     return os.urandom(DEV_RANDOM_BYTE_RETURN)
 
 def collect_audio_entropy():
-    return os.urandom(DEV_RANDOM_BYTE_RETURN)
+    return collect_audio_entropy(1)
 
 def collect_video_entropy(cap):
     # Grab frame

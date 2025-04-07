@@ -5,34 +5,27 @@ import matplotlib.pyplot as plt
 import hashlib
 import binascii
 
-
-def plot_frequency_spectrum(data, sample_rate):
+def collect_audio_entropy(duration):
     """
-    Plots the frequency spectrum of the audio data.
+    Collects audio entropy by recording audio from the default microphone and hashes it to a fixed 256-bit sequence.
 
     Args:
-        data (bytes): Raw audio data.
-        sample_rate (int): Sampling rate in Hz.
+        duration (int): Duration of the recording in seconds.
+
+    Returns:
+        bytes: Raw audio data collected from the microphone.
     """
-    # Convert bytes to numpy array of 16-bit integers
-    audio_array = np.frombuffer(data, dtype=np.int16)
 
-    # Perform FFT
-    N = len(audio_array)
-    freq = np.fft.fftfreq(N, d=1/sample_rate)
-    magnitude = np.abs(fft(audio_array))
+    # Collect audio data
+    audio_data = record_audio(duration)
 
-    # Plot the spectrum
-    plt.figure(figsize=(10, 6))
-    plt.plot(freq[:N // 2], magnitude[:N // 2])  # Plot only positive frequencies
-    plt.title("Frequency Spectrum")
-    plt.xlabel("Frequency (Hz)")
-    plt.ylabel("Magnitude")
-    plt.grid()
-    plt.show()
+    # Compress the audio data to a 256-bit hash
+    compressed_data = compress_to_256_bytes(audio_data)
+    print(compressed_data)
 
+    return compressed_data
 
-def collect_audio_entropy(duration, sample_rate=44100, chunk_size=1024, amplification_factor=2):
+def record_audio(duration, sample_rate=44100, chunk_size=1024, amplification_factor=10):
     """
     Collects and amplifies audio entropy by recording audio from the default microphone.
 
@@ -56,7 +49,7 @@ def collect_audio_entropy(duration, sample_rate=44100, chunk_size=1024, amplific
         frames_per_buffer=chunk_size
     )
 
-    print(f"[AUDIO] Recording {duration} second(s) of audio...")
+    # print(f"[AUDIO] Recording {duration} second(s) of audio...")
     frames = []
 
     # Record audio in chunks
@@ -69,7 +62,7 @@ def collect_audio_entropy(duration, sample_rate=44100, chunk_size=1024, amplific
     stream.close()
     audio.terminate()
 
-    print("[AUDIO] Recording complete.")
+    # print("[AUDIO] Recording complete.")
 
     # Combine frames and amplify
     raw_audio = b''.join(frames)
@@ -97,6 +90,20 @@ def amplify_audio(data, amplification_factor):
     # Convert back to bytes
     return audio_array.astype(np.int16).tobytes()
 
+def compress_to_256_bytes(data):
+    """
+    Compresses the raw audio data to a fixed 256-bit (32-byte) sequence using SHA-256.
+
+    Args:
+        data (bytes): Raw audio data.
+
+    Returns:
+        bytes: A 256-bit (32-byte) sequence derived from the audio data.
+    """
+    # Use SHA-256 to hash the data
+    hash_object = hashlib.sha256(data)
+    return hash_object.digest()  # Return the 32-byte hash directly
+
 def plot_frequency_spectrum(data, sample_rate):
     """
     Plots the frequency spectrum of the audio data.
@@ -122,31 +129,19 @@ def plot_frequency_spectrum(data, sample_rate):
     plt.grid()
     plt.show()
 
-def compress_to_256_bytes(data):
-    """
-    Compresses the raw audio data to a fixed 256-bit (32-byte) sequence using SHA-256.
-
-    Args:
-        data (bytes): Raw audio data.
-
-    Returns:
-        bytes: A 256-bit (32-byte) sequence derived from the audio data.
-    """
-    # Use SHA-256 to hash the data
-    hash_object = hashlib.sha256(data)
-    return hash_object.digest()  # Return the 32-byte hash directly
-
 if __name__ == "__main__":
-    # Example usage
-    audio_data = collect_audio_entropy(duration=1, sample_rate=44100, amplification_factor=5)
-    print(f"[AUDIO] Collected {len(audio_data)} bytes of audio data.")
+    # # Example usage
+    # audio_data = record_audio(duration=1, sample_rate=44100, amplification_factor=5)
+    # print(f"[AUDIO] Collected {len(audio_data)} bytes of audio data.")
     
-    # Compress the audio data to a 256-bit hash
-    compressed_data = compress_to_256_bytes(audio_data)
+    # # Compress the audio data to a 256-bit hash
+    # compressed_data = compress_to_256_bytes(audio_data)
     
-    # Convert the compressed data to a hexadecimal string
-    hex_representation = binascii.hexlify(compressed_data).decode('utf-8')
-    print(f"[AUDIO] Hexadecimal representation: {hex_representation}")
+    # # Convert the compressed data to a hexadecimal string
+    # hex_representation = binascii.hexlify(compressed_data).decode('utf-8')
+    # print(f"[AUDIO] Hexadecimal representation: {hex_representation}")
 
-    # Plot the frequency spectrum of the raw audio data
-    plot_frequency_spectrum(audio_data, sample_rate=16000)
+    # # Plot the frequency spectrum of the raw audio data
+    # plot_frequency_spectrum(audio_data, sample_rate=16000)
+    
+    collect_audio_entropy(1)
