@@ -37,10 +37,7 @@ def collect_all_entropy() -> bytes:
     audio_entropy = collect_audio_entropy()
     video_entropy = collect_video_entropy()
     
-    print(len(sys_entropy))
-    print(len(audio_entropy))
-    print(len(video_entropy))
-    
+
     # XOR all three sources together
     result = bytearray(COLLECT_ALL_RETURN_SIZE)
     for i in range(COLLECT_ALL_RETURN_SIZE):
