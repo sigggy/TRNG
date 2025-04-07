@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import hashlib
 import binascii
 
-def collect_audio_entropy(duration):
+def collect_audio(duration):
     """
     Collects audio entropy by recording audio from the default microphone and hashes it to a fixed 256-bit sequence.
 
@@ -21,7 +21,7 @@ def collect_audio_entropy(duration):
 
     # Compress the audio data to a 256-bit hash
     compressed_data = compress_to_256_bytes(audio_data)
-    print(compressed_data)
+    # print(compressed_data)
 
     return compressed_data
 
@@ -144,4 +144,4 @@ if __name__ == "__main__":
     # # Plot the frequency spectrum of the raw audio data
     # plot_frequency_spectrum(audio_data, sample_rate=16000)
     
-    collect_audio_entropy(1)
+    collect_audio(1)

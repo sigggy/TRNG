@@ -1,3 +1,6 @@
 portalocker
 yt_dlp
 opencv-python
+pyaudio
+scipy
+matplotlib

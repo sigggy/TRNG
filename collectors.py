@@ -1,12 +1,13 @@
 import hashlib
 import os
+from audio_entropy import *
 from defines import *
 
 def collect_system_entropy():
     return os.urandom(DEV_RANDOM_BYTE_RETURN)
 
 def collect_audio_entropy():
-    return collect_audio_entropy(1)
+    return collect_audio(1)
 
 def collect_video_entropy(cap):
     # Grab frame
