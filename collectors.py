@@ -2,7 +2,7 @@ import cv2
 import subprocess
 import hashlib
 import os
-import defines 
+from defines import * 
 
 def collect_system_entropy():
     return os.urandom(DEV_RANDOM_BYTE_RETURN)
