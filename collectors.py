@@ -9,9 +9,11 @@ def collect_audio_entropy():
 def collect_video_entropy():
     return b'VIDEO_ENTROPY_PLACEHOLDER'
 
-def collect_all_entropy():
-    return (
-        collect_system_entropy() +
-        collect_audio_entropy() +
-        collect_video_entropy()
+def collect_all_entropy() -> bytes:
+    sys_entropy = collect_system_entropy()
+    audio_entropy = collect_audio_entropy()
+    video_entropy = collect_video_entropy()
+
+    return bytes(
+        s ^ a ^ v for s, a, v in zip(sys_entropy, audio_entropy, video_entropy)
     )
