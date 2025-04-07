@@ -1,5 +1,7 @@
+import os
+
 def collect_system_entropy():
-    return b'SYSTEM_ENTROPY_PLACEHOLDER'
+    return os.urandom(256)
 
 def collect_audio_entropy():
     return b'AUDIO_ENTROPY_PLACEHOLDER'
