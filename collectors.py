@@ -1,11 +1,12 @@
 import hashlib
 import os
+from defines import *
 
 def collect_system_entropy():
-    return os.urandom(256)
+    return os.urandom(DEV_RANDOM_BYTE_RETURN)
 
 def collect_audio_entropy():
-    return b'AUDIO_ENTROPY_PLACEHOLDER'
+    return b'\x00' * 32
 
 def collect_video_entropy(cap):
     # Grab frame
@@ -17,9 +18,15 @@ def collect_video_entropy(cap):
     # return our hashed vals
     return hashed
 
-def collect_all_entropy(cap):
-    return (
-        collect_system_entropy() +
-        collect_audio_entropy() +
-        collect_video_entropy(cap)
-    )
+def collect_all_entropy(cap) -> bytes:
+    sys_entropy = collect_system_entropy()
+    audio_entropy = collect_audio_entropy()
+    video_entropy = collect_video_entropy(cap)
+    
+
+    # XOR all three sources together
+    result = bytearray(COLLECT_ALL_RETURN_SIZE)
+    for i in range(COLLECT_ALL_RETURN_SIZE):
+        result[i] = sys_entropy[i] ^ audio_entropy[i] ^ video_entropy[i]
+    
+    return bytes(result)
