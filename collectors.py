@@ -2,12 +2,13 @@ import cv2
 import subprocess
 import hashlib
 import os
+import defines 
 
 def collect_system_entropy():
-    return os.urandom(256)
+    return os.urandom(DEV_RANDOM_BYTE_RETURN)
 
 def collect_audio_entropy():
-    return b'AUDIO_ENTROPY_PLACEHOLDER'
+    return b'\x00' * 32
 
 def collect_video_entropy():
     # Grab url and commands to grab the stream
@@ -35,7 +36,14 @@ def collect_all_entropy() -> bytes:
     sys_entropy = collect_system_entropy()
     audio_entropy = collect_audio_entropy()
     video_entropy = collect_video_entropy()
-
-    return bytes(
-        s ^ a ^ v for s, a, v in zip(sys_entropy, audio_entropy, video_entropy)
-    )
+    
+    print(len(sys_entropy))
+    print(len(audio_entropy))
+    print(len(video_entropy))
+    
+    # XOR all three sources together
+    result = bytearray(COLLECT_ALL_RETURN_SIZE)
+    for i in range(COLLECT_ALL_RETURN_SIZE):
+        result[i] = sys_entropy[i] ^ audio_entropy[i] ^ video_entropy[i]
+    
+    return bytes(result)

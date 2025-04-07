@@ -2,7 +2,6 @@ import time
 from collectors import collect_all_entropy
 from buffer import EntropyBuffer
 from bank import write_to_bank
-from defines import PRODUCER_SLEEP_TIME
 
 buffer = EntropyBuffer()
 # * This read will need to be reworked as we grow to scale 
@@ -21,7 +20,6 @@ def producer_loop():
             else:
                 print(f'[PRODUCER] doesn\'t have enough bytes in the buffer to flush')
 
-            time.sleep(PRODUCER_SLEEP_TIME)
 
     except KeyboardInterrupt:
         print("\n[PRODUCER] KeyboardInterrupt received. Exiting gracefully.")
