@@ -1,9 +1,10 @@
 import cv2
 import subprocess
 import hashlib
+import os
 
 def collect_system_entropy():
-    return b'SYSTEM_ENTROPY_PLACEHOLDER'
+    return os.urandom(256)
 
 def collect_audio_entropy():
     return b'AUDIO_ENTROPY_PLACEHOLDER'
@@ -26,7 +27,7 @@ def collect_video_entropy():
     hashed = hashlib.sha256(pixels).digest()
     # Release stream URL
     cap.release()
-    
+
     # return our hashed vals
     return hashed
 
