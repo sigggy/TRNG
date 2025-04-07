@@ -1,3 +1,3 @@
 portalocker
 yt_dlp
-cv2
+opencv-python
