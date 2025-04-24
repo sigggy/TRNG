@@ -1,13 +1,19 @@
 import hashlib
 import os
-from audio_entropy import *
 from defines import *
 
 def collect_system_entropy():
     return os.urandom(DEV_RANDOM_BYTE_RETURN)
 
-def collect_audio_entropy():
-    return collect_audio(1)
+def collect_audio_entropy(stream):
+    frames = []
+    # Record audio in chunks
+    for _ in range(0, int(16000 / 1024 * 1)):
+        data = stream.read(1024)
+        frames.append(data)
+        
+    raw_audio = b''.join(frames)
+    return hashlib.sha256(raw_audio).digest()
 
 def collect_video_entropy(cap):
     # Grab frame
@@ -19,9 +25,9 @@ def collect_video_entropy(cap):
     # return our hashed vals
     return hashed
 
-def collect_all_entropy(cap) -> bytes:
+def collect_all_entropy(cap, stream) -> bytes:
     sys_entropy = collect_system_entropy()
-    audio_entropy = collect_audio_entropy()
+    audio_entropy = collect_audio_entropy(stream)
     video_entropy = collect_video_entropy(cap)
     
 
