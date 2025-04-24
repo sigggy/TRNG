@@ -15,7 +15,7 @@ def collect_audio_entropy(stream):
         frames.append(data)
         
     raw_audio = b''.join(frames)
-    return hashlib.sha256(raw_audio).digest()
+    return hashlib.sha3_256(raw_audio).digest()
 
 def collect_video_entropy(cap):
     # Grab frame
@@ -23,7 +23,7 @@ def collect_video_entropy(cap):
     # Grab the pixel values
     pixels = frame.flatten()
     # Hash down to 256 
-    hashed = hashlib.sha256(pixels).digest()
+    hashed = hashlib.sha3_256(pixels).digest()
     # return our hashed vals
     return hashed
 
