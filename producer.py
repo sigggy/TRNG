@@ -3,13 +3,24 @@ from buffer import EntropyBuffer
 from bank import write_to_bank
 import cv2
 import pyaudio
+import subprocess
 
 buffer = EntropyBuffer()
 # * This read will need to be reworked as we grow to scale 
 # * Will likely need to implement some sort of rotating chunk files 
 
+# Grab url and commands to grab the stream
+url = "https://www.youtube.com/watch?v=DHUnz4dyb54"
+cmd = ['yt-dlp', '-g', url]
+
+# Get the stream
+stream_url = subprocess.check_output(cmd).decode().strip()
+# Feed it to CV2 
+fishtank_cap = cv2.VideoCapture(stream_url)
+
+
 # Grab the webcam video
-cap = cv2.VideoCapture(0)
+creek_cap = cv2.VideoCapture(0)
 
 # grab audio
 audio = pyaudio.PyAudio()
@@ -27,7 +38,7 @@ stream = audio.open(
 def producer_loop():
     try:
         while True:
-            entropy = collect_all_entropy(cap, stream)
+            entropy = collect_all_entropy(creek_cap, fishtank_cap, stream)
             buffer.add(entropy)
 
             if buffer.should_flush():
