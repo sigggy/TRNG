@@ -8,8 +8,8 @@ def collect_system_entropy():
 def collect_audio_entropy(stream):
     frames = []
     # Record audio in chunks
-    for _ in range(0, int(16000 / 1024 * 1)):
-        data = stream.read(1024)
+    for _ in range(0, int(AUDIO_SAMPLE_RATE / AUDIO_CHUNK_SIZE * 1)):
+        data = stream.read(AUDIO_CHUNK_SIZE)
         if not data or all(b == 0 for b in data):
             raise ValueError("Low audio entropy")
         frames.append(data)
@@ -30,12 +30,12 @@ def collect_video_entropy(cap):
 def collect_all_entropy(creek_cap, fishtank_cap, stream) -> bytes:
     sys_entropy = collect_system_entropy()
     audio_entropy = collect_audio_entropy(stream)
-    creek_entropy = collect_video_entropy(creek_cap)
+    #creek_entropy = collect_video_entropy(creek_cap)
     fishtank_entropy = collect_video_entropy(fishtank_cap)
     
     # XOR all three sources together
     result = bytearray(COLLECT_ALL_RETURN_SIZE)
     for i in range(COLLECT_ALL_RETURN_SIZE):
-        result[i] = sys_entropy[i] ^ audio_entropy[i] ^ creek_entropy[i] ^ fishtank_entropy[i]
+        result[i] = sys_entropy[i] ^ audio_entropy[i] ^ fishtank_entropy[i] #^ creek_entropy[i]
     
     return bytes(result)
