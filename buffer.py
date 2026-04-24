@@ -14,6 +14,6 @@ class EntropyBuffer:
     def flush(self) -> bytes:
         if not self.buffer:
             return b''
-        digest = hashlib.sha256(self.buffer).digest()
+        digest = hashlib.sha3_256(self.buffer).digest()
         self.buffer.clear()
         return digest
